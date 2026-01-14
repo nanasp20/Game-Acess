@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Aluguéis - Game Access</title>
+    <link rel="stylesheet" href="css/estilo.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body class="app-body">
+
+    <header class="app-header">
+        <div class="header-left">
+            <div class="app-logo"><a href="home.html" style="text-decoration:none; color:var(--verde-neon)">GAME ACCESS</a></div>
+        </div>
+        <div class="header-right">
+            <a href="home.html"><span class="material-icons" style="color:white; font-size: 2rem;">arrow_back</span></a>
+            <span class="material-icons user-icon-large" style="font-size: 2rem; color: white;">account_circle</span>
+        </div>
+    </header>
+
+    <div class="main-content" style="padding-top: 40px;">
+
+        <section class="rental-section">
+            <h2 class="section-title-neon">JOGANDO AGORA</h2>
+            
+            <div class="active-rentals-grid">
+                <div class="rental-card">
+                    <div class="rental-img" style="background-color: #4b0082;"></div> <div class="rental-info">
+                        <h3>Stellar Odyssey</h3>
+                        <p class="status-text">Devolução em: <strong>2 Dias</strong></p>
+                        
+                        <div class="time-bar-container">
+                            <div class="time-bar-fill" style="width: 60%;"></div>
+                        </div>
+
+                        <div class="rental-actions">
+                            <button class="btn-play-small">JOGAR ▶</button>
+                            <button class="btn-extend">ESTENDER +</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rental-card">
+                    <div class="rental-img" style="background-color: #006400;"></div>
+                    <div class="rental-info">
+                        <h3>Forest King</h3>
+                        <p class="status-text warning">Devolução: <strong>HOJE</strong></p>
+                        
+                        <div class="time-bar-container">
+                            <div class="time-bar-fill warning" style="width: 90%;"></div>
+                        </div>
+
+                        <div class="rental-actions">
+                            <button class="btn-play-small">JOGAR ▶</button>
+                            <button class="btn-extend">ESTENDER +</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="rental-section">
+            <h2 class="section-title-neon">MÉTODOS DE PAGAMENTO</h2>
+            
+            <div class="wallet-container">
+                <div class="credit-card">
+                    <div class="card-chip"></div>
+                    <p class="card-number">**** **** **** 4242</p>
+                    <div class="card-bottom">
+                        <p>FERNANDA SILVA</p>
+                        <p>12/28</p>
+                    </div>
+                    <span class="card-brand">VISA</span>
+                </div>
+
+                <div class="add-card-box">
+                    <span class="material-icons" style="font-size: 3rem; color: #555;">add_circle</span>
+                    <p>Adicionar Novo Cartão</p>
+                </div>
+            </div>
+        </section>
+
+       <section class="rental-section">
+            <h2 class="section-title-neon">HISTÓRICO DE ALUGUÉIS</h2>
+            
+            <div class="tabela-scroll">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Jogo</th>
+                            <th>Data</th>
+                            <th>Período</th>
+                            <th>Valor</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Cyber Soul</td>
+                            <td>10/01/2026</td>
+                            <td>3 Dias</td>
+                            <td>R$ 15,00</td>
+                            <td><span class="tag-status finished">Finalizado</span></td>
+                        </tr>
+                        <tr>
+                            <td>Deep Void</td>
+                            <td>05/01/2026</td>
+                            <td>7 Dias</td>
+                            <td>R$ 25,00</td>
+                            <td><span class="tag-status finished">Finalizado</span></td>
+                        </tr>
+                        <tr>
+                            <td>Magic Tower</td>
+                            <td>20/12/2025</td>
+                            <td>1 Dia</td>
+                            <td>R$ 5,00</td>
+                            <td><span class="tag-status finished">Finalizado</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> 
+            </section>
+
+    </div>
+
+    <footer class="site-footer">
+        <p class="copyright">© 2026 Game Access</p>
+    </footer>
+
+</body>
+</html>

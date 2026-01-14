@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Game Access</title>
+    <link rel="stylesheet" href="css/estilo.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body class="app-body">
+
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header"><span class="close-btn" onclick="toggleMenu()">&times;</span></div>
+        <div class="user-sidebar-info">
+            <span class="material-icons user-icon-large">account_circle</span>
+            <p class="user-title">USUÁRIO</p>
+            <p class="user-saldo">SALDO: R$ 50,00</p>
+        </div>
+        <ul class="menu-list">
+            <li><a href="alugueis.html">Meus Aluguéis</a></li>
+            <li><a href="#minhalista">Minha Lista</a></li>
+        </ul>
+        <div class="menu-bottom">
+            <a href="#"><span class="material-icons">settings</span> Config.</a>
+            <a href="#"><span class="material-icons">help_outline</span> Ajuda</a>
+        </div>
+        <div class="menu-sair">
+            <a href="index.html" style="color: #ff4444; display:flex; justify-content:flex-end; gap:5px;">Sair <span class="material-icons">logout</span></a>
+        </div>
+    </aside>
+    <div id="overlay" class="overlay" onclick="toggleMenu()"></div>
+
+    <header class="app-header">
+        <div class="header-left">
+            <div class="app-logo">GAME ACCESS</div>
+            <div class="genre-dropdown" onclick="toggleGenres()">
+                Gêneros <span class="material-icons" style="font-size: 1rem;">expand_more</span>
+                <div class="genre-menu" id="genreMenu">
+                    <a href="#acao">Ação</a>
+                    <a href="#aventura">Aventura</a>
+                    <a href="#rpg">RPG</a>
+                    <a href="#simulacao">Simulação</a>
+                    <a href="#estrategia">Estratégia</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="search-box" id="searchBox">
+                <span class="material-icons search-icon" onclick="toggleSearch()">search</span>
+                <input type="text" class="search-input" id="searchInput" placeholder="Buscar...">
+            </div>
+
+            <div class="notification-box" onclick="toggleNotif()">
+                <span class="material-icons" style="color:white; font-size:1.8rem;">notifications</span>
+                <div class="notification-dot"></div>
+                <div class="notification-dropdown" id="notifDropdown">
+                    <div class="notif-item"><strong>Promoção!</strong> Stellar Odyssey com 50% OFF.</div>
+                    <div class="notif-item"><strong>Novo:</strong> Forest King chegou.</div>
+                </div>
+            </div>
+
+            <span class="material-icons menu-icon" onclick="toggleMenu()">menu</span>
+        </div>
+    </header>
+
+    <section class="hero-carousel">
+        <div class="hero-slide ativo">
+            <div class="slide-bg" style="background-color: #4b0082;"></div>
+            <div class="hero-content">
+                <h1 class="hero-title">STELLAR ODYSSEY</h1>
+                <p class="hero-desc">Explore o universo desconhecido neste RPG sci-fi.</p>
+                <button class="btn-play">▶ Alugar R$ 15,00</button>
+                <a href="detalhes.html"><button class="btn-info">ℹ Detalhes</button></a>
+            </div>
+        </div>
+        <div class="hero-slide">
+            <div class="slide-bg" style="background-color: #006400;"></div>
+            <div class="hero-content">
+                <h1 class="hero-title">FOREST KING</h1>
+                <p class="hero-desc">Reconquiste a floresta ancestral.</p>
+                <button class="btn-play">▶ Alugar R$ 10,00</button>
+                <a href="detalhes.html"><button class="btn-info">ℹ Detalhes</button></a>
+            </div>
+        </div>
+        <div class="carousel-dots">
+            <span class="dot ativo" onclick="mudarSlide(0)"></span>
+            <span class="dot" onclick="mudarSlide(1)"></span>
+        </div>
+    </section>
+
+    <div class="main-content">
+
+        <section class="row">
+            <h3>Lançamentos</h3>
+            <div class="slider-wrapper">
+                <button class="arrow-btn left-arrow">❮</button>
+                <div class="row-container">
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #ff4500;"></div><div class="card-details"><h4>Cyber Soul</h4><p class="card-genre">Ação</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #2e8b57;"></div><div class="card-details"><h4>Forest King</h4><p class="card-genre">Estratégia</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #4682b4;"></div><div class="card-details"><h4>Deep Void</h4><p class="card-genre">Terror</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #d2691e;"></div><div class="card-details"><h4>Desert Ops</h4><p class="card-genre">FPS</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #800080;"></div><div class="card-details"><h4>Magic Tower</h4><p class="card-genre">Puzzle</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #555;"></div><div class="card-details"><h4>Speed Demon</h4><p class="card-genre">Corrida</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #222;"></div><div class="card-details"><h4>Shadow Blade</h4><p class="card-genre">Ação</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #800;"></div><div class="card-details"><h4>Blood Moon</h4><p class="card-genre">RPG</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #008;"></div><div class="card-details"><h4>Pro Striker</h4><p class="card-genre">Esporte</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #080;"></div><div class="card-details"><h4>Farm Life</h4><p class="card-genre">Simulação</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #666;"></div><div class="card-details"><h4>Urban Chaos</h4><p class="card-genre">Ação</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #333;"></div><div class="card-details"><h4>Tomb Hunter</h4><p class="card-genre">Aventura</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #999;"></div><div class="card-details"><h4>Fight Club</h4><p class="card-genre">Luta</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #700;"></div><div class="card-details"><h4>Dark Souls V</h4><p class="card-genre">RPG</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #070;"></div><div class="card-details"><h4>Pixel Hero</h4><p class="card-genre">Indie</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #007;"></div><div class="card-details"><h4>GT Racing</h4><p class="card-genre">Corrida</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #505;"></div><div class="card-details"><h4>Sniper Elite</h4><p class="card-genre">FPS</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #550;"></div><div class="card-details"><h4>Zoo Tycoon</h4><p class="card-genre">Simulação</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #055;"></div><div class="card-details"><h4>Mars Base</h4><p class="card-genre">Estratégia</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #f00;"></div><div class="card-details"><h4>Silent Hill R</h4><p class="card-genre">Terror</p></div></div></a>
+                </div>
+                <button class="arrow-btn right-arrow">❯</button>
+            </div>
+        </section>
+
+        <section class="row">
+            <h3>Top 10 hoje</h3>
+            <div class="slider-wrapper">
+                <button class="arrow-btn left-arrow">❮</button>
+                <div class="row-container">
+                    <a href="detalhes.html" class="card-link"><div class="card-top10"><span class="rank">1</span><div class="card-color" style="background: #b22222;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card-top10"><span class="rank">2</span><div class="card-color" style="background: #483d8b;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card-top10"><span class="rank">3</span><div class="card-color" style="background: #2f4f4f;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card-top10"><span class="rank">4</span><div class="card-color" style="background: #556b2f;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card-top10"><span class="rank">5</span><div class="card-color" style="background: #8b4513;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card-top10"><span class="rank">6</span><div class="card-color" style="background: #666;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card-top10"><span class="rank">7</span><div class="card-color" style="background: #333;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card-top10"><span class="rank">8</span><div class="card-color" style="background: #999;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card-top10"><span class="rank">9</span><div class="card-color" style="background: #500;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card-top10"><span class="rank">10</span><div class="card-color" style="background: #005;"></div></div></a>
+                </div>
+                <button class="arrow-btn right-arrow">❯</button>
+            </div>
+        </section>
+
+        <section class="row" id="minhalista">
+            <h3>Minha lista</h3>
+            <div class="slider-wrapper">
+                <button class="arrow-btn left-arrow">❮</button>
+                <div class="row-container">
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon" style="color:var(--verde-neon)">bookmark</span><div class="card-color" style="background: #c71585;"></div><div class="card-details"><h4>Neon Love</h4><p class="card-genre">Novel</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon" style="color:var(--verde-neon)">bookmark</span><div class="card-color" style="background: #00ced1;"></div><div class="card-details"><h4>Ice Climber</h4><p class="card-genre">Plataforma</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon" style="color:var(--verde-neon)">bookmark</span><div class="card-color" style="background: #ffd700;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon" style="color:var(--verde-neon)">bookmark</span><div class="card-color" style="background: #ff4500;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon" style="color:var(--verde-neon)">bookmark</span><div class="card-color" style="background: #2e8b57;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon" style="color:var(--verde-neon)">bookmark</span><div class="card-color" style="background: #4682b4;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon" style="color:var(--verde-neon)">bookmark</span><div class="card-color" style="background: #d2691e;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon" style="color:var(--verde-neon)">bookmark</span><div class="card-color" style="background: #800080;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon" style="color:var(--verde-neon)">bookmark</span><div class="card-color" style="background: #555;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon" style="color:var(--verde-neon)">bookmark</span><div class="card-color" style="background: #222;"></div></div></a>
+                </div>
+                <button class="arrow-btn right-arrow">❯</button>
+            </div>
+        </section>
+
+        <section class="row" id="acao">
+            <h3>Ação</h3>
+            <div class="slider-wrapper">
+                <button class="arrow-btn left-arrow">❮</button>
+                <div class="row-container">
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #4b0082;"></div><div class="card-details"><h4>Blast Core</h4><p class="card-genre">Ação</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #5b1092;"></div><div class="card-details"><h4>Iron Fist</h4><p class="card-genre">Luta</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #6b20a2;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #7b30b2;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #8b40c2;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #9b50d2;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #ab60e2;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #bb70f2;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #cb80ff;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #4b0082;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #5b1092;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #6b20a2;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #7b30b2;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #8b40c2;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #9b50d2;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #ab60e2;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #bb70f2;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #cb80ff;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #4b0082;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #5b1092;"></div></div></a>
+                </div>
+                <button class="arrow-btn right-arrow">❯</button>
+            </div>
+        </section>
+
+        <section class="row" id="aventura">
+            <h3>Aventura</h3>
+            <div class="slider-wrapper">
+                <button class="arrow-btn left-arrow">❮</button>
+                <div class="row-container">
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #2e8b57;"></div><div class="card-details"><h4>Lost Ruins</h4><p class="card-genre">Aventura</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #3e9b67;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #4eab77;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #5ebb87;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #6ecb97;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #7edba7;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #8eebb7;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #9efbc7;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #aeffd7;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #beffe7;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #2e8b57;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #3e9b67;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #4eab77;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #5ebb87;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #6ecb97;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #7edba7;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #8eebb7;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #9efbc7;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #aeffd7;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #beffe7;"></div></div></a>
+                </div>
+                <button class="arrow-btn right-arrow">❯</button>
+            </div>
+        </section>
+
+        <section class="row" id="rpg">
+            <h3>RPG</h3>
+            <div class="slider-wrapper">
+                <button class="arrow-btn left-arrow">❮</button>
+                <div class="row-container">
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #8b0000;"></div><div class="card-details"><h4>Dragon's Oath</h4><p class="card-genre">RPG</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #9b1010;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #ab2020;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #bb3030;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #cb4040;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #db5050;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #eb6060;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #fb7070;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #ff8080;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #ff9090;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #8b0000;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #9b1010;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #ab2020;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #bb3030;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #cb4040;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #db5050;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #eb6060;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #fb7070;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #ff8080;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #ff9090;"></div></div></a>
+                </div>
+                <button class="arrow-btn right-arrow">❯</button>
+            </div>
+        </section>
+
+        <section class="row" id="simulacao">
+            <h3>Simulação</h3>
+            <div class="slider-wrapper">
+                <button class="arrow-btn left-arrow">❮</button>
+                <div class="row-container">
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #00ced1;"></div><div class="card-details"><h4>City Builder</h4><p class="card-genre">Simulação</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #10ded1;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #20eee1;"></div></div></a>
+                    </div>
+                <button class="arrow-btn right-arrow">❯</button>
+            </div>
+        </section>
+
+        <section class="row" id="estrategia">
+            <h3>Estratégia</h3>
+            <div class="slider-wrapper">
+                <button class="arrow-btn left-arrow">❮</button>
+                <div class="row-container">
+                    <a href="detalhes.html" class="card-link"><div class="card"><span class="material-icons bookmark-icon">bookmark_border</span><div class="card-color" style="background: #ffd700;"></div><div class="card-details"><h4>Empire War</h4><p class="card-genre">RTS</p></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #ffe710;"></div></div></a>
+                    <a href="detalhes.html" class="card-link"><div class="card"><div class="card-color" style="background: #fff720;"></div></div></a>
+                    </div>
+                <button class="arrow-btn right-arrow">❯</button>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="site-footer">
+        <div class="social-icons">
+            <span class="material-icons">facebook</span>
+            <span class="material-icons">photo_camera</span>
+            <span class="material-icons">alternate_email</span>
+        </div>
+        <p class="copyright">© 2026 Game Access - Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

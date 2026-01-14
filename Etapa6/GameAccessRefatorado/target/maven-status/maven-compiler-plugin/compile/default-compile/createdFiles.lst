@@ -1,0 +1,7 @@
+br\com\senac\gameacess\dao\Conexao.class
+br\com\senac\gameacess\main\Main.class
+br\com\senac\gameacess\dao\UsuarioDAO.class
+br\com\senac\gameacess\dao\JogoDAO.class
+br\com\senac\gameacess\model\Jogo.class
+br\com\senac\gameacess\model\ServicoAluguel.class
+br\com\senac\gameacess\model\Usuario.class

@@ -23,12 +23,17 @@
         <div class="header-left">
             <div class="app-logo"><a href="/catalogo" style="text-decoration:none; color:var(--verde-neon)">GAME ACCESS</a></div>
         </div>
-        <div class="header-right">
-            <div style="text-align: right; margin-right: 10px;">
-                <span style="color:white; display:block; font-size: 0.9rem;" th:text="${usuario.nomeUsuario}">Usuário</span>
-                <span style="color:var(--verde-neon); font-size: 0.8rem;" th:text="'R$ ' + ${usuario.saldo}">R$ 0.00</span>
+        <div class="header-right" style="display: flex; align-items: center;">
+            <div style="text-align: right; margin-right: 15px;">
+                <span style="color:white; display:block; font-size: 0.9rem; font-weight: bold;" th:text="${usuario.nomeUsuario}">Usuário</span>
             </div>
-            <a href="/catalogo"><span class="material-icons" style="color:white; font-size: 2rem;">arrow_back</span></a>
+            <a href="/catalogo" style="display: flex; align-items: center; text-decoration: none;">
+                <span class="material-icons" style="color:white; font-size: 2rem;">arrow_back</span>
+            </a>
+            <a href="/configuracao" style="display: flex; align-items: center; margin-left: 10px;">
+                <img th:src="${usuario.fotoPerfil != null ? usuario.fotoPerfil : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" 
+                     style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid var(--verde-neon);">
+            </a>
         </div>
     </header>
 

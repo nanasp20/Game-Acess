@@ -12,16 +12,15 @@
     <aside id="sidebar" class="sidebar">
         <div class="sidebar-header"><span class="close-btn" onclick="toggleMenu()">&times;</span></div>
         <div class="user-sidebar-info">
-            <span class="material-icons user-icon-large">account_circle</span>
+            <img th:if="${usuario.fotoPerfil != null}" th:src="${usuario.fotoPerfil}" 
+                 style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--verde-neon); margin-bottom: 10px;">
+            <span th:unless="${usuario.fotoPerfil != null}" class="material-icons user-icon-large">account_circle</span>
             
             <p class="user-title" th:text="${usuario.nomeUsuario}">VISITANTE</p>
-            
-            <p class="user-saldo" th:text="'SALDO: R$ ' + ${usuario.saldo}">SALDO: R$ 0,00</p>
-        </div>
+            </div>
         <ul class="menu-list">
             <li><a href="/alugueis">Meus Aluguéis</a></li>
-            <li><a href="#minhalista">Minha Lista</a></li>
-            <li><a href="/configuracao">Configuração</a></li>
+            <li><a href="/catalogo">Minha Lista</a></li> <li><a href="/configuracao">Configuração</a></li>
         </ul>
         <div class="menu-bottom">
             <a href="/configuracao"><span class="material-icons">settings</span> Config.</a>
@@ -46,7 +45,7 @@
             </div>
         </div>
 
-        <div class="header-right">
+        <div class="header-right" style="display: flex; align-items: center; gap: 15px;">
             <div class="search-box" id="searchBox">
                 <span class="material-icons search-icon" onclick="toggleSearch()">search</span>
                 <input type="text" class="search-input" id="searchInput" placeholder="Buscar...">
@@ -64,6 +63,11 @@
                     <div class="notif-item" th:if="${notificacoes.empty}">Nenhuma novidade.</div>
                 </div>
             </div>
+
+            <a href="/configuracao" title="Meu Perfil">
+                <img th:if="${usuario.fotoPerfil != null}" th:src="${usuario.fotoPerfil}" 
+                     style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid var(--verde-neon);">
+            </a>
 
             <span class="material-icons menu-icon" onclick="toggleMenu()">menu</span>
         </div>

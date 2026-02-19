@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Segurança - Game Access</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        .config-container { max-width: 600px; margin: 0 auto; padding-top: 100px; }
+        .card-security { background: #1a1a1a; padding: 30px; border-radius: 15px; border: 1px solid #333; margin-bottom: 20px; }
+        .input-dark { width: 100%; padding: 15px; background: #000; border: 1px solid #444; color: white; border-radius: 5px; margin-top: 10px; font-size: 1.1rem; }
+        .btn-save { background: var(--verde-neon); width: 100%; padding: 15px; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; margin-top: 20px; }
+    </style>
+</head>
+<body class="app-body">
+    
+    <header class="app-header">
+        <div class="header-left"><div class="app-logo">GAME ACCESS</div></div>
+        <div class="header-right"><a href="/configuracao"><span class="material-icons" style="color:white; font-size: 2rem;">arrow_back</span></a></div>
+    </header>
+
+    <div class="main-content">
+        <div class="config-container">
+            <h1 style="color: white; margin-bottom: 20px;">CENTRAL DE SEGURANÇA</h1>
+            
+            <form action="/salvarSeguranca" method="get">
+                
+                <div class="card-security">
+                    <h3 style="color: var(--verde-neon);"><span class="material-icons" style="vertical-align:bottom;">lock</span> PIN Parental (4 Dígitos)</h3>
+                    <p style="color: #aaa; font-size: 0.9rem;">Usado para desbloquear jogos +18.</p>
+                    <input type="text" name="pinParental" class="input-dark" placeholder="Ex: 1234" maxlength="4" th:value="${usuario.pinParental}">
+                </div>
+
+                <div class="card-security">
+                    <h3 style="color: var(--verde-neon);"><span class="material-icons" style="vertical-align:bottom;">shopping_cart</span> Senha de Compra</h3>
+                    <p style="color: #aaa; font-size: 0.9rem;">Será pedida antes de confirmar qualquer aluguel.</p>
+                    <input type="text" name="senhaCompra" class="input-dark" placeholder="Crie uma senha segura" th:value="${usuario.senhaCompra}">
+                </div>
+
+                <button type="submit" class="btn-save">SALVAR SENHAS</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+

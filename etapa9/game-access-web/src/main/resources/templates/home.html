@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Game Access</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body class="app-body">
+
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header"><span class="close-btn" onclick="toggleMenu()">&times;</span></div>
+        <div class="user-sidebar-info">
+            <span class="material-icons user-icon-large">account_circle</span>
+            
+            <p class="user-title" th:text="${usuario.nomeUsuario}">VISITANTE</p>
+            
+            <p class="user-saldo" th:text="'SALDO: R$ ' + ${usuario.saldo}">SALDO: R$ 0,00</p>
+        </div>
+        <ul class="menu-list">
+            <li><a href="/alugueis">Meus Aluguéis</a></li>
+            <li><a href="#minhalista">Minha Lista</a></li>
+            <li><a href="/configuracao">Configuração</a></li>
+        </ul>
+        <div class="menu-bottom">
+            <a href="/configuracao"><span class="material-icons">settings</span> Config.</a>
+            <a href="#"><span class="material-icons">help_outline</span> Ajuda</a>
+        </div>
+        <div class="menu-sair">
+            <a href="/" style="color: #ff4444; display:flex; justify-content:flex-end; gap:5px;">Sair <span class="material-icons">logout</span></a>
+        </div>
+    </aside>
+    <div id="overlay" class="overlay" onclick="toggleMenu()"></div>
+
+    <header class="app-header">
+        <div class="header-left">
+            <div class="app-logo">GAME ACCESS</div>
+            <div class="genre-dropdown" onclick="toggleGenres()">
+                Gêneros <span class="material-icons" style="font-size: 1rem;">expand_more</span>
+                <div class="genre-menu" id="genreMenu">
+                    <a th:each="gen : ${listaGeneros}" 
+                       th:href="'#' + ${gen}" 
+                       th:text="${gen}">Gênero</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="search-box" id="searchBox">
+                <span class="material-icons search-icon" onclick="toggleSearch()">search</span>
+                <input type="text" class="search-input" id="searchInput" placeholder="Buscar...">
+            </div>
+
+            <div class="notification-box" onclick="toggleNotif()">
+                <span class="material-icons" style="color:white; font-size:1.8rem;">notifications</span>
+                <div class="notification-dot" th:if="${!notificacoes.empty}"></div>
+                <div class="notification-dropdown" id="notifDropdown">
+                    <div class="notif-header" style="padding:10px; border-bottom:1px solid #444;">Novos Jogos</div>
+                    <div class="notif-item" th:each="n : ${notificacoes}">
+                        <strong th:text="'Novo: ' + ${n.titulo}">Jogo</strong>
+                        <br><span style="font-size:0.8rem; color:#ccc;" th:text="${n.genero}">Gênero</span>
+                    </div>
+                    <div class="notif-item" th:if="${notificacoes.empty}">Nenhuma novidade.</div>
+                </div>
+            </div>
+
+            <span class="material-icons menu-icon" onclick="toggleMenu()">menu</span>
+        </div>
+    </header>
+
+    <section class="hero-carousel">
+        <div class="hero-slide ativo">
+            <div class="slide-bg" style="background-color: #4b0082;"></div>
+            <div class="hero-content">
+                <h1 class="hero-title">BEM-VINDO</h1>
+                <p class="hero-desc">Explore o catálogo completo.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="main-content">
+
+        <section class="row" id="minhalista" th:if="${minhaListaItens != null and !minhaListaItens.empty}">
+            <h3>Minha Lista</h3>
+            <div class="slider-wrapper">
+                <button class="arrow-btn left-arrow">❮</button>
+                <div class="row-container">
+                    <div th:each="item : ${minhaListaItens}" class="card-link" style="cursor: default;">
+                       <div class="card" style="position: relative;">
+                           <a th:href="@{/marcar/{id}(id=${item.jogo.id_jogo})}" 
+                              style="text-decoration:none; position: absolute; top: 10px; right: 10px; z-index: 20;">
+                               <span class="material-icons bookmark-icon" style="color: #00ff00;">bookmark</span>
+                           </a>
+                           <a th:href="@{/detalhes/{id}(id=${item.jogo.id_jogo})}" style="text-decoration:none; color:inherit;">
+                               <div class="card-color" th:style="'background-image: url(' + ${item.jogo.imagem} + '); background-size: cover; background-position: center; background-color: #333;'"></div>
+                               <div class="card-details">
+                                   <h4 th:text="${item.jogo.titulo}">Título</h4>
+                                   <p class="card-genre" th:text="${item.jogo.genero}">Gênero</p>
+                               </div>
+                           </a>
+                       </div>
+                    </div>
+                </div>
+                <button class="arrow-btn right-arrow">❯</button>
+            </div>
+        </section>
+
+        <section class="row">
+            <h3>Lançamentos</h3>
+            <div class="slider-wrapper">
+                <button class="arrow-btn left-arrow">❮</button>
+                <div class="row-container">
+                    <div th:each="jogo : ${notificacoes}" class="card-link" style="cursor: default;">
+                        <div class="card" style="position: relative;">
+                            
+                            <a th:href="@{/marcar/{id}(id=${jogo.id_jogo})}" 
+                               style="text-decoration:none; position: absolute; top: 10px; right: 10px; z-index: 20;">
+                                <span class="material-icons bookmark-icon"
+                                      th:text="${idsSalvos != null and #lists.contains(idsSalvos, jogo.id_jogo)} ? 'bookmark' : 'bookmark_border'"
+                                      th:style="${idsSalvos != null and #lists.contains(idsSalvos, jogo.id_jogo)} ? 'color: #00ff00;' : 'color: white;'">
+                                      bookmark_border
+                                </span>
+                            </a>
+
+                            <a th:href="@{/detalhes/{id}(id=${jogo.id_jogo})}" style="text-decoration:none; color:inherit;">
+                                <div class="card-color" th:style="'background-image: url(' + ${jogo.imagem} + '); background-size: cover; background-position: center; background-color: #333;'"></div>
+                                <div class="card-details">
+                                    <h4 th:text="${jogo.titulo}">Título</h4>
+                                    <p class="card-genre" th:text="${jogo.genero}">Gênero</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <button class="arrow-btn right-arrow">❯</button>
+            </div>
+        </section>
+
+        <section class="row" id="Ação" th:if="${!jogosAcao.empty}">
+            <h3>Ação</h3>
+            <div class="slider-wrapper">
+                <button class="arrow-btn left-arrow">❮</button>
+                <div class="row-container">
+                    <div th:each="jogo : ${jogosAcao}" class="card-link" style="cursor: default;">
+                        <div class="card" style="position: relative;">
+                            <a th:href="@{/marcar/{id}(id=${jogo.id_jogo})}" style="text-decoration:none; position: absolute; top: 10px; right: 10px; z-index: 20;">
+                                <span class="material-icons bookmark-icon"
+                                      th:text="${idsSalvos != null and #lists.contains(idsSalvos, jogo.id_jogo)} ? 'bookmark' : 'bookmark_border'"
+                                      th:style="${idsSalvos != null and #lists.contains(idsSalvos, jogo.id_jogo)} ? 'color: #00ff00;' : 'color: white;'">
+                                      bookmark_border
+                                </span>
+                            </a>
+                            <a th:href="@{/detalhes/{id}(id=${jogo.id_jogo})}" style="text-decoration:none; color:inherit;">
+                                <div class="card-color" th:style="'background-image: url(' + ${jogo.imagem} + '); background-size: cover; background-position: center; background-color: #5b1092;'"></div>
+                                <div class="card-details">
+                                    <h4 th:text="${jogo.titulo}">Título</h4>
+                                    <p class="card-genre" th:text="${jogo.genero}">Ação</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <button class="arrow-btn right-arrow">❯</button>
+            </div>
+        </section>
+
+        <section class="row" id="RPG" th:if="${!jogosRPG.empty}">
+            <h3>RPG</h3>
+            <div class="slider-wrapper">
+                <button class="arrow-btn left-arrow">❮</button>
+                <div class="row-container">
+                    <div th:each="jogo : ${jogosRPG}" class="card-link" style="cursor: default;">
+                        <div class="card" style="position: relative;">
+                            <a th:href="@{/marcar/{id}(id=${jogo.id_jogo})}" style="text-decoration:none; position: absolute; top: 10px; right: 10px; z-index: 20;">
+                                <span class="material-icons bookmark-icon"
+                                      th:text="${idsSalvos != null and #lists.contains(idsSalvos, jogo.id_jogo)} ? 'bookmark' : 'bookmark_border'"
+                                      th:style="${idsSalvos != null and #lists.contains(idsSalvos, jogo.id_jogo)} ? 'color: #00ff00;' : 'color: white;'">
+                                      bookmark_border
+                                </span>
+                            </a>
+                            <a th:href="@{/detalhes/{id}(id=${jogo.id_jogo})}" style="text-decoration:none; color:inherit;">
+                                <div class="card-color" th:style="'background-image: url(' + ${jogo.imagem} + '); background-size: cover; background-position: center; background-color: #8b0000;'"></div>
+                                <div class="card-details">
+                                    <h4 th:text="${jogo.titulo}">Título</h4>
+                                    <p class="card-genre" th:text="${jogo.genero}">RPG</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <button class="arrow-btn right-arrow">❯</button>
+            </div>
+        </section>
+
+        <section class="row" id="Estratégia" th:if="${!jogosEstrategia.empty}">
+            <h3>Estratégia</h3>
+            <div class="slider-wrapper">
+                <button class="arrow-btn left-arrow">❮</button>
+                <div class="row-container">
+                    <div th:each="jogo : ${jogosEstrategia}" class="card-link" style="cursor: default;">
+                        <div class="card" style="position: relative;">
+                            <a th:href="@{/marcar/{id}(id=${jogo.id_jogo})}" style="text-decoration:none; position: absolute; top: 10px; right: 10px; z-index: 20;">
+                                <span class="material-icons bookmark-icon"
+                                      th:text="${idsSalvos != null and #lists.contains(idsSalvos, jogo.id_jogo)} ? 'bookmark' : 'bookmark_border'"
+                                      th:style="${idsSalvos != null and #lists.contains(idsSalvos, jogo.id_jogo)} ? 'color: #00ff00;' : 'color: white;'">
+                                      bookmark_border
+                                </span>
+                            </a>
+                            <a th:href="@{/detalhes/{id}(id=${jogo.id_jogo})}" style="text-decoration:none; color:inherit;">
+                                <div class="card-color" th:style="'background-image: url(' + ${jogo.imagem} + '); background-size: cover; background-position: center; background-color: #ffd700;'"></div>
+                                <div class="card-details">
+                                    <h4 th:text="${jogo.titulo}">Título</h4>
+                                    <p class="card-genre" th:text="${jogo.genero}">Estratégia</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <button class="arrow-btn right-arrow">❯</button>
+            </div>
+        </section>
+
+        <section class="row" id="Simulação" th:if="${!jogosSimulacao.empty}">
+            <h3>Simulação</h3>
+            <div class="slider-wrapper">
+                <button class="arrow-btn left-arrow">❮</button>
+                <div class="row-container">
+                    <div th:each="jogo : ${jogosSimulacao}" class="card-link" style="cursor: default;">
+                        <div class="card" style="position: relative;">
+                            <a th:href="@{/marcar/{id}(id=${jogo.id_jogo})}" style="text-decoration:none; position: absolute; top: 10px; right: 10px; z-index: 20;">
+                                <span class="material-icons bookmark-icon"
+                                      th:text="${idsSalvos != null and #lists.contains(idsSalvos, jogo.id_jogo)} ? 'bookmark' : 'bookmark_border'"
+                                      th:style="${idsSalvos != null and #lists.contains(idsSalvos, jogo.id_jogo)} ? 'color: #00ff00;' : 'color: white;'">
+                                      bookmark_border
+                                </span>
+                            </a>
+                            <a th:href="@{/detalhes/{id}(id=${jogo.id_jogo})}" style="text-decoration:none; color:inherit;">
+                                <div class="card-color" th:style="'background-image: url(' + ${jogo.imagem} + '); background-size: cover; background-position: center; background-color: #00ced1;'"></div>
+                                <div class="card-details">
+                                    <h4 th:text="${jogo.titulo}">Título</h4>
+                                    <p class="card-genre" th:text="${jogo.genero}">Simulação</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <button class="arrow-btn right-arrow">❯</button>
+            </div>
+        </section>
+
+        <section class="row" id="Aventura" th:if="${!jogosAventura.empty}">
+            <h3>Aventura</h3>
+            <div class="slider-wrapper">
+                <button class="arrow-btn left-arrow">❮</button>
+                <div class="row-container">
+                    <div th:each="jogo : ${jogosAventura}" class="card-link" style="cursor: default;">
+                        <div class="card" style="position: relative;">
+                            <a th:href="@{/marcar/{id}(id=${jogo.id_jogo})}" style="text-decoration:none; position: absolute; top: 10px; right: 10px; z-index: 20;">
+                                <span class="material-icons bookmark-icon"
+                                      th:text="${idsSalvos != null and #lists.contains(idsSalvos, jogo.id_jogo)} ? 'bookmark' : 'bookmark_border'"
+                                      th:style="${idsSalvos != null and #lists.contains(idsSalvos, jogo.id_jogo)} ? 'color: #00ff00;' : 'color: white;'">
+                                      bookmark_border
+                                </span>
+                            </a>
+                            <a th:href="@{/detalhes/{id}(id=${jogo.id_jogo})}" style="text-decoration:none; color:inherit;">
+                                <div class="card-color" th:style="'background-image: url(' + ${jogo.imagem} + '); background-size: cover; background-position: center; background-color: #2e8b57;'"></div>
+                                <div class="card-details">
+                                    <h4 th:text="${jogo.titulo}">Título</h4>
+                                    <p class="card-genre" th:text="${jogo.genero}">Aventura</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <button class="arrow-btn right-arrow">❯</button>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="site-footer">
+        <div class="social-icons">
+            <span class="material-icons">facebook</span>
+            <span class="material-icons">photo_camera</span>
+            <span class="material-icons">alternate_email</span>
+        </div>
+        <p class="copyright">© 2026 Game Access - Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="/js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Aluguéis - Game Access</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <style>
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 999; justify-content: center; align-items: center; }
+        .modal-content { background: #1a1a1a; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; border: 1px solid var(--verde-neon); box-shadow: 0 0 20px rgba(0,255,0,0.2); }
+        .form-group { margin-bottom: 15px; }
+        .form-input { width: 100%; padding: 12px; background: #333; border: 1px solid #555; color: white; border-radius: 5px; outline: none; }
+        .form-input:focus { border-color: var(--verde-neon); }
+        .btn-save { width: 100%; padding: 12px; background: var(--verde-neon); color: black; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        .btn-cancel { width: 100%; padding: 12px; background: transparent; color: #aaa; border: none; cursor: pointer; margin-top: 5px; }
+    </style>
+</head>
+<body class="app-body">
+
+    <header class="app-header">
+        <div class="header-left">
+            <div class="app-logo"><a href="/catalogo" style="text-decoration:none; color:var(--verde-neon)">GAME ACCESS</a></div>
+        </div>
+        <div class="header-right">
+            <div style="text-align: right; margin-right: 10px;">
+                <span style="color:white; display:block; font-size: 0.9rem;" th:text="${usuario.nomeUsuario}">Usuário</span>
+                <span style="color:var(--verde-neon); font-size: 0.8rem;" th:text="'R$ ' + ${usuario.saldo}">R$ 0.00</span>
+            </div>
+            <a href="/catalogo"><span class="material-icons" style="color:white; font-size: 2rem;">arrow_back</span></a>
+        </div>
+    </header>
+
+    <div class="main-content" style="padding-top: 40px;">
+
+        <section class="rental-section">
+            <h2 class="section-title-neon">JOGANDO AGORA</h2>
+            
+            <div class="active-rentals-grid">
+                <div class="rental-card" th:each="aluguel : ${historico}" th:if="${aluguel.statusAluguel == 'ATIVO'}">
+                    <div class="rental-img" th:style="'background-image: url(' + ${aluguel.jogo.imagem} + '); background-size: cover;'"></div> 
+                    <div class="rental-info">
+                        <h3 th:text="${aluguel.jogo.titulo}">Nome do Jogo</h3>
+                        <p class="status-text">Devolução: <strong th:text="${aluguel.dataDevolucao}">Data</strong></p>
+                        
+                        <div class="time-bar-container">
+                            <div class="time-bar-fill" style="width: 50%;"></div>
+                        </div>
+
+                        <div class="rental-actions">
+                            <button class="btn-play-small">JOGAR ▶</button>
+                            <button class="btn-extend">ESTENDER +</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <p th:if="${historico.empty}" style="color:#666; padding:10px;">Nenhum jogo ativo no momento.</p>
+            </div>
+        </section>
+
+        <section class="rental-section">
+            <h2 class="section-title-neon">MÉTODOS DE PAGAMENTO</h2>
+            
+            <div class="wallet-container">
+                
+                <div class="credit-card" th:each="cartao : ${meusCartoes}" style="background: linear-gradient(135deg, #222, #444);">
+                    <div class="card-chip"></div>
+                    <p class="card-number" th:text="${cartao.numeroCartao}">**** **** **** 0000</p>
+                    <div class="card-bottom">
+                        <p th:text="${cartao.nomeTitular}">NOME</p>
+                        <p th:text="${cartao.validade}">00/00</p>
+                    </div>
+                    <span class="card-brand">CARD</span>
+                </div>
+
+                <div class="add-card-box" onclick="abrirModal()" style="cursor: pointer;">
+                    <span class="material-icons" style="font-size: 3rem; color: #555;">add_circle</span>
+                    <p>Adicionar Novo Cartão</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="rental-section">
+            <h2 class="section-title-neon">HISTÓRICO DE ALUGUÉIS</h2>
+            
+            <div class="tabela-scroll">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Jogo</th>
+                            <th>Data</th>
+                            <th>Valor</th>
+                            <th>Horas</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="item : ${historico}">
+                            <td th:text="${item.jogo.titulo}">Jogo</td>
+                            <td th:text="${item.dataAluguel}">Data</td>
+                            <td th:text="'R$ ' + ${item.valorTotal}">R$ 00,00</td>
+                            <td th:text="${item.horasJogadas} + 'h'">0h</td>
+                            <td>
+                                <span class="tag-status" 
+                                      th:classappend="${item.statusAluguel == 'ATIVO'} ? 'active' : 'finished'"
+                                      th:text="${item.statusAluguel}">
+                                    Status
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> 
+        </section>
+
+    </div>
+
+    <div id="modalCartao" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="color: white; text-align: center; margin-bottom: 20px;">Novo Cartão</h3>
+            
+            <form action="/salvarCartao" method="get">
+                <div class="form-group">
+                    <input type="text" name="numeroCartao" class="form-input" placeholder="Número do Cartão" required maxlength="19">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="nomeTitular" class="form-input" placeholder="Nome Impresso no Cartão" required style="text-transform: uppercase;">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" name="validade" class="form-input" placeholder="MM/AA" required maxlength="5">
+                    <input type="text" class="form-input" placeholder="CVV" required maxlength="3">
+                </div>
+                
+                <button type="submit" class="btn-save">SALVAR CARTÃO</button>
+                <button type="button" class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <p class="copyright">© 2026 Game Access</p>
+    </footer>
+
+    <script>
+        function abrirModal() {
+            document.getElementById('modalCartao').style.display = 'flex';
+        }
+        function fecharModal() {
+            document.getElementById('modalCartao').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>

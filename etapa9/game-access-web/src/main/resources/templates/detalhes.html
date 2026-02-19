@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes - Game Access</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 999; justify-content: center; align-items: center; }
+        .modal-content { background: #1a1a1a; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; border: 1px solid var(--verde-neon); box-shadow: 0 0 30px rgba(75,0,130,0.4); text-align: center; }
+        .form-select, .form-input { width: 100%; padding: 12px; background: #333; border: 1px solid #555; color: white; border-radius: 5px; margin-bottom: 15px; }
+        .total-price { font-size: 1.5rem; color: var(--verde-neon); font-weight: bold; margin: 15px 0; }
+        .btn-confirm { width: 100%; padding: 12px; background: var(--verde-neon); color: black; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; }
+        .btn-confirm:hover { background: white; }
+        .btn-cancel { background: transparent; color: #aaa; border: none; margin-top: 10px; cursor: pointer; text-decoration: underline; }
+        
+        
+        .blur-content { filter: blur(10px); pointer-events: none; user-select: none; }
+        .lock-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.7); }
+    </style>
+</head>
+<body class="app-body">
+
+    <header class="app-header">
+        <div class="app-logo"><a href="/catalogo" style="text-decoration:none; color:var(--verde-neon)">GAME ACCESS</a></div>
+        <div class="header-right">
+            <div style="text-align: right; margin-right: 10px;">
+                <span style="color:white; display:block; font-size: 0.9rem;" th:text="${usuario.nomeUsuario}">Usuário</span>
+                <span style="color:var(--verde-neon); font-size: 0.8rem;" th:text="'R$ ' + ${usuario.saldo}">R$ 0.00</span>
+            </div>
+            <a href="/catalogo"><span class="material-icons" style="color:white; font-size: 2rem;">arrow_back</span></a>
+        </div>
+    </header>
+
+    <div id="conteudoPagina" style="position: relative;">
+        
+        <div id="lockScreen" class="lock-screen" style="display: none;">
+            <span class="material-icons" style="font-size: 5rem; color: red;">lock</span>
+            <h2 style="color: white; margin-top: 10px;">CONTEÚDO RESTRITO</h2>
+            <p style="color: #ccc; margin-bottom: 15px;">Digite o PIN Parental para visualizar.</p>
+            <input type="password" id="inputPin" class="form-input" style="width: 150px; text-align: center; font-size: 1.5rem;" maxlength="4" placeholder="PIN">
+            <button type="button" onclick="verificarPin()" class="btn-confirm" style="width: 150px; background: red; color: white;">DESBLOQUEAR</button>
+        </div>
+
+        <div class="detalhes-hero" 
+             th:style="'background-image: url(' + ${jogo.imagem} + '); background-color: #4b0082; background-size: cover; background-position: center;'">
+            
+            <div class="detalhes-overlay"></div>
+            <div class="detalhes-container">
+                
+                <h1 class="detalhes-titulo" th:text="${jogo.titulo}">NOME DO JOGO</h1>
+                
+                <p class="detalhes-meta">
+                    <span th:text="${jogo.dataLancamento.year}">2025</span> | 
+                    <span th:text="${jogo.genero}">Gênero</span> | 
+                    <span th:text="${jogo.jogadores}">Jogadores</span>
+                </p>
+                
+                <button th:if="${jaAlugado}" class="btn-alugar" style="background-color: var(--verde-neon); color: black; border: none;">
+                    <span class="material-icons" style="vertical-align: middle;">sports_esports</span> JOGAR AGORA
+                </button>
+
+                <button th:unless="${jaAlugado}" 
+                        class="btn-alugar" 
+                        th:text="'ALUGAR R$ ' + ${jogo.preco_aluguel} + ' / dia'"
+                        onclick="abrirModalAluguel()">
+                    ALUGAR R$ 00,00
+                </button>
+
+            </div>
+        </div>
+
+        <div class="detalhes-info-section">
+            <h3 class="info-titulo">SOBRE O JOGO</h3>
+            <p class="info-texto" th:text="${jogo.descricao}">Descrição...</p>
+            
+            <h3 class="info-titulo">FICHA TÉCNICA</h3>
+            <div class="tech-grid">
+                <p><strong>Plataforma:</strong> <span th:text="${jogo.plataforma}">Plataforma</span></p>
+                <p><strong>Distribuidora:</strong> <span th:text="${jogo.distribuidora}">Empresa</span></p>
+                <p><strong>Gênero:</strong> <span th:text="${jogo.genero}">Gênero</span></p>
+                <p><strong>Tamanho:</strong> <span th:text="${jogo.tamanho}">0 GB</span></p>
+            </div>
+        </div>
+
+        <footer class="site-footer">
+            <p class="copyright">© 2026 Game Access</p>
+        </footer>
+    </div>
+
+    <div id="modalAluguel" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="color: white; margin-bottom: 20px;">Finalizar Aluguel</h3>
+            
+            <p th:if="${param.erroSenha}" style="color: red; background: rgba(255,0,0,0.1); padding: 5px; border-radius: 5px; margin-bottom: 10px;">
+                <span class="material-icons" style="font-size:1rem; vertical-align:middle;">error</span> Senha de compra incorreta!
+            </p>
+            
+            <form action="/confirmarAluguel" method="get">
+                <input type="hidden" name="idJogo" th:value="${jogo.id_jogo}">
+                
+                <div style="text-align: left; margin-bottom: 5px; color: #ccc;">Escolha o Pagamento:</div>
+                <select class="form-select" name="cartaoId" required>
+                    <option value="" disabled selected>Selecione um cartão...</option>
+                    <option th:each="cartao : ${meusCartoes}" 
+                            th:value="${cartao.id}" 
+                            th:text="${cartao.nomeTitular} + ' - ' + ${cartao.numeroCartao}">Cartão</option>
+                </select>
+
+                <div style="text-align: left; margin-bottom: 5px; color: #ccc;">Quantos dias?</div>
+                <input type="number" id="inputDias" name="dias" class="form-input" 
+                       value="1" min="1" max="30" 
+                       oninput="atualizarTotal()" onchange="atualizarTotal()">
+
+                <div th:if="${usuario.pedirSenhaCompra}">
+                    <div style="text-align: left; margin-bottom: 5px; color: var(--verde-neon);">Senha de Compra:</div>
+                    <input type="password" name="senhaDigitada" class="form-input" placeholder="Digite sua senha de compra" required>
+                </div>
+
+                <p>Valor Total:</p>
+                <div class="total-price" id="textoTotal">R$ 0,00</div>
+                <input type="hidden" id="inputValorTotal" name="valorTotal">
+
+                <button type="submit" class="btn-confirm">CONFIRMAR E JOGAR</button>
+                <button type="button" class="btn-cancel" onclick="fecharModalAluguel()">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        
+        var precoTexto = "[[${jogo.preco_aluguel}]]";
+        
+        
+        var controleAtivo = false;
+        var pinCorreto =  "0000";
+        var generoJogo =  "";
+        
+        var jogoAdulto = generoJogo.includes("RPG") || generoJogo.includes("+18");
+        
+
+        
+        window.onload = function() {
+           
+            if (controleAtivo && jogoAdulto) {
+                document.querySelector('.detalhes-hero').classList.add('blur-content');
+                document.querySelector('.detalhes-info-section').classList.add('blur-content');
+                document.getElementById('lockScreen').style.display = 'flex';
+            }
+            
+           
+            const urlParams = new URLSearchParams(window.location.search);
+            if(urlParams.has('erroSenha')) {
+                abrirModalAluguel();
+            }
+        };
+
+        function verificarPin() {
+            var pinDigitado = document.getElementById('inputPin').value;
+            if (pinDigitado === pinCorreto) {
+               
+                document.getElementById('lockScreen').style.display = 'none';
+                document.querySelector('.detalhes-hero').classList.remove('blur-content');
+                document.querySelector('.detalhes-info-section').classList.remove('blur-content');
+            } else {
+                alert("PIN Incorreto! Tente novamente.");
+            }
+        }
+
+       
+        var precoDiario = 0;
+        try {
+            if (precoTexto && precoTexto !== 'null') {
+                var formatado = precoTexto.toString().replace(',', '.');
+                precoDiario = parseFloat(formatado);
+            }
+        } catch (e) { console.error(e); }
+
+        function abrirModalAluguel() {
+            document.getElementById('modalAluguel').style.display = 'flex';
+            atualizarTotal(); 
+        }
+
+        function fecharModalAluguel() {
+            document.getElementById('modalAluguel').style.display = 'none';
+        }
+
+        function atualizarTotal() {
+            var dias = document.getElementById('inputDias').value;
+            
+            if (!dias || dias < 1) { dias = 1; }
+
+            var total = dias * precoDiario;
+
+            var totalVisual = total.toFixed(2).replace('.', ',');
+            document.getElementById('textoTotal').innerText = 'R$ ' + totalVisual;
+            
+            document.getElementById('inputValorTotal').value = total.toFixed(2);
+        }
+    </script>
+
+</body>
+</html>

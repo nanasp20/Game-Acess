@@ -63,7 +63,7 @@
                     <span th:text="${jogo.jogadores}">Jogadores</span>
                 </p>
                 
-                <button th:if="${jaAlugado}" class="btn-alugar" style="background-color: var(--verde-neon); color: black; border: none;">
+                <button th:if="${jaAlugado}" class="btn-alugar" style="background-color: var(--verde-neon); color: black; border: none;" onclick="abrirMeuJogo()">
                     <span class="material-icons" style="vertical-align: middle;">sports_esports</span> JOGAR AGORA
                 </button>
 
@@ -141,7 +141,26 @@
         var pinCorreto = /*[[${usuario.pinParental}]]*/ "0000";
         var generoJogo = /*[[${jogo.genero}]]*/ "";
         var jogoAdulto = generoJogo.includes("RPG") || generoJogo.includes("+18");
+        
+        // Variavel que pega o título do jogo para saber qual link abrir
+        var tituloJogo = /*[[${jogo.titulo}]]*/ "";
         /*]]>*/
+
+        // FUNÇÃO QUE ABRE O ITCH.IO DEPENDENDO DO NOME DO JOGO
+        function abrirMeuJogo() {
+            var titulo = tituloJogo.toLowerCase(); // Deixa minúsculo para facilitar a busca
+
+            if (titulo.includes("lost in tales")) {
+                window.open('https://luccaoliveira.itch.io/lost-in-tales-mobile-game', '_blank');
+            } else if (titulo.includes("feneco")) {
+                window.open('https://nanasp20.itch.io/feneco', '_blank');
+            } else if (titulo.includes("dark side of horror")) {
+                window.open('https://saulosouza2703.itch.io/darksideofhorror', '_blank');
+            } else {
+                // Se for outro jogo do banco, abre a home do Itch.io
+                window.open('https://itch.io', '_blank');
+            }
+        }
 
         window.onload = function() {
             if (controleAtivo && jogoAdulto) {

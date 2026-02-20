@@ -53,6 +53,28 @@ public class WebController {
         return "home"; 
     }
 
+    
+    @GetMapping("/marcar/{id}")
+    @Transactional
+    public String marcarJogo(@PathVariable Integer id) {
+        Usuario usuario = usuarioRepository.findById(1).orElse(null);
+        Optional<Jogo> jogoOpt = jogoRepository.findById(id);
+
+        if (usuario != null && jogoOpt.isPresent()) {
+            Jogo jogo = jogoOpt.get();
+            if (listaRepository.existsByUsuarioAndJogo(usuario, jogo)) {
+                listaRepository.deleteByUsuarioAndJogo(usuario, jogo);
+            } else {
+                ListaDesejos novoItem = new ListaDesejos();
+                novoItem.setUsuario(usuario);
+                novoItem.setJogo(jogo);
+                listaRepository.save(novoItem);
+            }
+        }
+        return "redirect:/catalogo"; 
+    }
+   
+
     @GetMapping("/detalhes/{id}")
     public String detalhes(@PathVariable Integer id, Model model) {
         Usuario usuario = usuarioRepository.findById(1).orElse(null);
@@ -98,7 +120,6 @@ public class WebController {
         return "redirect:/detalhes/" + idJogo;
     }
     
-    
     @GetMapping("/alugueis") 
     public String alugueis(Model model) { 
         Usuario usuario = usuarioRepository.findById(1).orElse(null);
@@ -107,7 +128,6 @@ public class WebController {
             java.time.LocalDate hoje = java.time.LocalDate.now();
             
             for(Aluguel a : todosAlugueis) {
-                
                 if("ATIVO".equals(a.getStatusAluguel()) && a.getDataDevolucao().isBefore(hoje)) {
                     a.setStatusAluguel("FINALIZADO");
                     aluguelRepository.save(a);
@@ -152,11 +172,8 @@ public class WebController {
                 } catch (Exception e) { e.printStackTrace(); }
             }
 
-            
             usuario.setControleParental(controleParental != null);
             usuario.setPedirSenhaCompra(pedirSenhaCompra != null);
-            
-            System.out.println("DEBUG: Controle Parental Ativo? " + usuario.getControleParental());
             usuarioRepository.save(usuario);
         }
         return "redirect:/configuracao";
@@ -170,7 +187,6 @@ public class WebController {
             usuario.setPinParental(pinParental);
             usuario.setSenhaCompra(senhaCompra);
             usuarioRepository.save(usuario);
-            System.out.println("DEBUG: Senhas de segurança salvas!");
         }
         return "redirect:/seguranca?sucesso=true"; 
     }

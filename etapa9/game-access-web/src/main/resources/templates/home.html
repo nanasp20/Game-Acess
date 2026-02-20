@@ -17,10 +17,11 @@
             <span th:unless="${usuario.fotoPerfil != null}" class="material-icons user-icon-large">account_circle</span>
             
             <p class="user-title" th:text="${usuario.nomeUsuario}">VISITANTE</p>
-            </div>
+        </div>
         <ul class="menu-list">
             <li><a href="/alugueis">Meus Aluguéis</a></li>
-            <li><a href="/catalogo">Minha Lista</a></li> <li><a href="/configuracao">Configuração</a></li>
+            <li><a href="/catalogo">Minha Lista</a></li> 
+            <li><a href="/configuracao">Configuração</a></li>
         </ul>
         <div class="menu-bottom">
             <a href="/configuracao"><span class="material-icons">settings</span> Config.</a>
@@ -48,7 +49,7 @@
         <div class="header-right" style="display: flex; align-items: center; gap: 15px;">
             <div class="search-box" id="searchBox">
                 <span class="material-icons search-icon" onclick="toggleSearch()">search</span>
-                <input type="text" class="search-input" id="searchInput" placeholder="Buscar...">
+                <input type="text" class="search-input" id="searchInput" placeholder="Buscar..." oninput="filtrarJogosNaTela()">
             </div>
 
             <div class="notification-box" onclick="toggleNotif()">
@@ -293,5 +294,74 @@
     </footer>
 
     <script src="/js/script.js"></script>
+
+    <script>
+        // === FUNÇÃO DA BARRA DE PESQUISA (TURBINADA) ===
+        function filtrarJogosNaTela() {
+            const input = document.getElementById("searchInput");
+            if (!input) return;
+            
+            const termo = input.value.toLowerCase().trim();
+            const prateleiras = document.querySelectorAll(".row");
+
+            prateleiras.forEach(prateleira => {
+                const cartoes = prateleira.querySelectorAll(".card-link");
+                let temJogoVisivel = false;
+
+                cartoes.forEach(cartao => {
+                    const h4 = cartao.querySelector("h4");
+                    const pGenre = cartao.querySelector(".card-genre");
+                    const titulo = h4 ? h4.innerText.toLowerCase() : "";
+                    const genero = pGenre ? pGenre.innerText.toLowerCase() : "";
+
+                    if (titulo.includes(termo) || genero.includes(termo)) {
+                        cartao.style.display = ""; 
+                        temJogoVisivel = true;
+                    } else {
+                        cartao.style.display = "none"; 
+                    }
+                });
+
+                if (termo !== "" && !temJogoVisivel) {
+                    prateleira.style.display = "none";
+                } else {
+                    prateleira.style.display = ""; 
+                }
+            });
+        }
+
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            const genreMenu = document.getElementById("genreMenu");
+            if (genreMenu) {
+                const linksOriginais = Array.from(genreMenu.querySelectorAll("a"));
+                const generosLimpados = new Set();
+
+                linksOriginais.forEach(link => {
+                    let texto = link.innerText.trim();
+                    let partes = texto.split("/").map(p => p.trim()); 
+                    partes.forEach(parte => {
+                        if (parte !== "") generosLimpados.add(parte);
+                    });
+                    link.remove();
+                });
+
+                generosLimpados.forEach(gen => {
+                    let novoLink = document.createElement("a");
+                    novoLink.href = "#" + gen;
+                    novoLink.innerText = gen;
+                    novoLink.onclick = function(e) {
+                        const sessaoDestino = document.getElementById(gen);
+                        if (sessaoDestino) {
+                            e.preventDefault();
+                            sessaoDestino.scrollIntoView({ behavior: "smooth", block: "start" });
+                            genreMenu.classList.remove("ativo");
+                        }
+                    };
+                    genreMenu.appendChild(novoLink);
+                });
+            }
+        });
+    </script>
 </body>
 </html>

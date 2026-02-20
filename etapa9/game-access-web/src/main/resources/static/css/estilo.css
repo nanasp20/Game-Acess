@@ -373,3 +373,61 @@ input:checked + .slider:before { transform: translateX(24px); }
     .card-top10 .card-color { width: 100px; height: 150px; }
     .sidebar { width: 100%; right: -100%; }
 }
+
+
+.badge-classif {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    color: white;
+    font-size: 0.9rem;
+    display: inline-block;
+    text-align: center;
+    min-width: 35px;
+}
+
+
+.rating-L, .rating-Livre { background-color: #00a650; } 
+.rating-10 { background-color: #0fb7e3; }             
+.rating-12 { background-color: #fde721; color: #000 !important; } 
+.rating-14 { background-color: #f7941d; }             
+.rating-16 { background-color: #f00; }                 
+.rating-18 { background-color: #000; border: 1px solid white; } 
+
+
+.profile-pic-header {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover; 
+    border: 2px solid var(--verde-neon);
+    background-color: #222;
+}
+
+.profile-pic-large {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--verde-neon);
+    background-color: #222;
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+}
+
+
+.user-icon-placeholder {
+    font-size: 40px;
+    color: white;
+}
+
+
+.form-group input[type="file"] {
+    padding: 10px;
+    background: #1a1a1a;
+    border: 1px dashed #444;
+    cursor: pointer;
+}
+
+.form-group input[type="file"]:hover {
+    border-color: var(--verde-neon);
+}

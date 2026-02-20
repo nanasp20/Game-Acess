@@ -16,11 +16,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import jakarta.transaction.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.ArrayList;
+import java.util.Base64;
 
 @Controller
 public class WebController {
@@ -38,10 +43,8 @@ public class WebController {
     @GetMapping("/catalogo")
     public String catalogo(Model model) { 
         Usuario usuario = usuarioRepository.findById(1).orElse(null);
-        
         if(usuario != null) {
             model.addAttribute("usuario", usuario);
-            
             List<ListaDesejos> minhaLista = listaRepository.findByUsuario(usuario);
             model.addAttribute("minhaListaItens", minhaLista);
 
@@ -106,22 +109,25 @@ public class WebController {
     }
 
     
-    @GetMapping("/confirmarAluguel")
-    public String confirmarAluguel(Integer idJogo, Integer dias, Double valorTotal, String senhaDigitada) {
+    @PostMapping("/confirmarAluguel")
+    public String confirmarAluguel(@RequestParam Integer idJogo, 
+                                   @RequestParam Integer dias, 
+                                   @RequestParam Double valorTotal, 
+                                   @RequestParam(required = false) String senhaDigitada) {
+        
         Usuario usuario = usuarioRepository.findById(1).orElse(null);
         Optional<Jogo> jogoOpt = jogoRepository.findById(idJogo);
 
         if (usuario != null && jogoOpt.isPresent()) {
-            
-            
+            // Verifica se a senha de compra está ativada
             if (Boolean.TRUE.equals(usuario.getPedirSenhaCompra())) {
+                System.out.println("Validando senha de compra...");
                 if (senhaDigitada == null || !senhaDigitada.equals(usuario.getSenhaCompra())) {
-                    
+                    System.out.println("SENHA INCORRETA!");
                     return "redirect:/detalhes/" + idJogo + "?erroSenha=true";
                 }
             }
 
-            
             Aluguel novoAluguel = new Aluguel();
             novoAluguel.setUsuario(usuario);
             novoAluguel.setJogo(jogoOpt.get());
@@ -132,6 +138,7 @@ public class WebController {
             novoAluguel.setHorasJogadas(0);
 
             aluguelRepository.save(novoAluguel);
+            System.out.println("Aluguel realizado com sucesso!");
         }
         return "redirect:/detalhes/" + idJogo;
     }
@@ -162,19 +169,32 @@ public class WebController {
         return "redirect:/alugueis";
     }
 
-    @GetMapping("/salvarConfig")
-    public String salvarConfig(String nomeUsuario, String fotoPerfil, 
-                               String controleParental, String pedirSenhaCompra) {
+    @PostMapping("/salvarConfig")
+    public String salvarConfig(@RequestParam("nomeUsuario") String nomeUsuario, 
+                               @RequestParam(value="imagemArquivo", required=false) MultipartFile imagemArquivo, 
+                               @RequestParam(value="controleParental", required=false) String controleParental, 
+                               @RequestParam(value="pedirSenhaCompra", required=false) String pedirSenhaCompra) {
         
         Usuario usuario = usuarioRepository.findById(1).orElse(null);
         if(usuario != null) {
+            System.out.println("=== ATUALIZANDO CONFIGURAÇÕES ===");
             usuario.setNomeUsuario(nomeUsuario);
-            if(fotoPerfil != null && !fotoPerfil.isEmpty()) {
-                usuario.setFotoPerfil(fotoPerfil);
+            
+            if (imagemArquivo != null && !imagemArquivo.isEmpty()) {
+                try {
+                    byte[] bytes = imagemArquivo.getBytes();
+                    String base64Img = Base64.getEncoder().encodeToString(bytes);
+                    usuario.setFotoPerfil("data:image/jpeg;base64," + base64Img);
+                } catch (Exception e) { e.printStackTrace(); }
             }
+
+            
             usuario.setControleParental(controleParental != null);
             usuario.setPedirSenhaCompra(pedirSenhaCompra != null);
             
+            System.out.println("Controle Parental: " + usuario.getControleParental());
+            System.out.println("Senha Compra: " + usuario.getPedirSenhaCompra());
+
             usuarioRepository.save(usuario);
         }
         return "redirect:/configuracao";
@@ -186,23 +206,25 @@ public class WebController {
         return "configuracao"; 
     }
 
-    
     @GetMapping("/seguranca")
     public String seguranca(Model model) {
         usuarioRepository.findById(1).ifPresent(u -> model.addAttribute("usuario", u));
         return "seguranca";
     }
 
-    
-    @GetMapping("/salvarSeguranca")
-    public String salvarSeguranca(String pinParental, String senhaCompra) {
+    @PostMapping("/salvarSeguranca")
+    public String salvarSeguranca(@RequestParam("pinParental") String pinParental, 
+                                   @RequestParam("senhaCompra") String senhaCompra) {
+        
         Usuario usuario = usuarioRepository.findById(1).orElse(null);
         if(usuario != null) {
+            System.out.println("=== SALVANDO NOVAS SENHAS ===");
+            System.out.println("PIN: " + pinParental);
+            
             usuario.setPinParental(pinParental);
             usuario.setSenhaCompra(senhaCompra);
             usuarioRepository.save(usuario);
         }
         return "redirect:/seguranca?sucesso=true"; 
     }
-    
 }

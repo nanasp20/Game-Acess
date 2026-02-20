@@ -15,8 +15,8 @@
         .btn-confirm:hover { background: white; }
         .btn-cancel { background: transparent; color: #aaa; border: none; margin-top: 10px; cursor: pointer; text-decoration: underline; }
         
-        .blur-content { filter: blur(10px); pointer-events: none; user-select: none; }
-        .lock-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.7); }
+        .blur-content { filter: blur(15px); pointer-events: none; user-select: none; }
+        .lock-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.8); }
     </style>
 </head>
 <body class="app-body">
@@ -33,8 +33,9 @@
                 <span class="material-icons" style="color:white; font-size: 2rem;">arrow_back</span>
             </a>
             <a href="/configuracao" style="display: flex; align-items: center; margin-left: 10px;">
-                <img th:src="${usuario.fotoPerfil != null ? usuario.fotoPerfil : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" 
-                     style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid var(--verde-neon);">
+                <img th:if="${usuario.fotoPerfil != null}" th:src="${usuario.fotoPerfil}" 
+                     class="profile-pic-header">
+                <span th:unless="${usuario.fotoPerfil != null}" class="material-icons" style="color:white; font-size: 2rem;">account_circle</span>
             </a>
         </div>
     </header>
@@ -44,13 +45,13 @@
         <div id="lockScreen" class="lock-screen" style="display: none;">
             <span class="material-icons" style="font-size: 5rem; color: red;">lock</span>
             <h2 style="color: white; margin-top: 10px;">CONTEÚDO RESTRITO</h2>
-            <p style="color: #ccc; margin-bottom: 15px;">Digite o PIN Parental para visualizar.</p>
+            <p style="color: #ccc; margin-bottom: 15px;">Digite o PIN Parental para visualizar este jogo.</p>
             <input type="password" id="inputPin" class="form-input" style="width: 150px; text-align: center; font-size: 1.5rem;" maxlength="4" placeholder="PIN">
             <button type="button" onclick="verificarPin()" class="btn-confirm" style="width: 150px; background: red; color: white;">DESBLOQUEAR</button>
         </div>
 
         <div class="detalhes-hero" 
-             th:style="'background-image: url(' + ${jogo.imagem} + '); background-color: #4b0082; background-size: cover; background-position: center;'">
+             th:style="'background-image: url(' + ${jogo.imagem} + '); background-size: cover; background-position: center;'">
             
             <div class="detalhes-overlay"></div>
             <div class="detalhes-container">
@@ -60,7 +61,8 @@
                 <p class="detalhes-meta">
                     <span th:text="${jogo.dataLancamento.year}">2025</span> | 
                     <span th:text="${jogo.genero}">Gênero</span> | 
-                    <span th:text="${jogo.jogadores}">Jogadores</span>
+                    <span th:class="'badge-classif rating-' + ${jogo.classificacao}" 
+                          th:text="${jogo.classificacao}">L</span>
                 </p>
                 
                 <button th:if="${jaAlugado}" class="btn-alugar" style="background-color: var(--verde-neon); color: black; border: none;" onclick="abrirMeuJogo()">
@@ -98,58 +100,47 @@
     <div id="modalAluguel" class="modal-overlay">
         <div class="modal-content">
             <h3 style="color: white; margin-bottom: 20px;">Finalizar Aluguel</h3>
-            
             <p th:if="${param.erroSenha}" style="color: red; background: rgba(255,0,0,0.1); padding: 5px; border-radius: 5px; margin-bottom: 10px;">
                 <span class="material-icons" style="font-size:1rem; vertical-align:middle;">error</span> Senha de compra incorreta!
             </p>
-            
             <form action="/confirmarAluguel" method="get">
                 <input type="hidden" name="idJogo" th:value="${jogo.id_jogo}">
-                
-                <div style="text-align: left; margin-bottom: 5px; color: #ccc;">Escolha o Pagamento:</div>
                 <select class="form-select" name="cartaoId" required>
                     <option value="" disabled selected>Selecione um cartão...</option>
-                    <option th:each="cartao : ${meusCartoes}" 
-                            th:value="${cartao.id}" 
-                            th:text="${cartao.nomeTitular} + ' - ' + ${cartao.numeroCartao}">Cartão</option>
+                    <option th:each="cartao : ${meusCartoes}" th:value="${cartao.id}" th:text="${cartao.nomeTitular} + ' - ' + ${cartao.numeroCartao}"></option>
                 </select>
-
-                <div style="text-align: left; margin-bottom: 5px; color: #ccc;">Quantos dias?</div>
-                <input type="number" id="inputDias" name="dias" class="form-input" 
-                       value="1" min="1" max="30" 
-                       oninput="atualizarTotal()" onchange="atualizarTotal()">
-
+                <input type="number" id="inputDias" name="dias" class="form-input" value="1" min="1" max="30" oninput="atualizarTotal()">
+                
                 <div th:if="${usuario.pedirSenhaCompra}">
-                    <div style="text-align: left; margin-bottom: 5px; color: var(--verde-neon);">Senha de Compra:</div>
-                    <input type="password" name="senhaDigitada" class="form-input" placeholder="Digite sua senha de compra" required>
+                    <label style="color: var(--verde-neon); display:block; text-align:left; margin-bottom:5px;">Senha de Compra Requerida:</label>
+                    <input type="password" name="senhaDigitada" class="form-input" placeholder="Digite sua senha de segurança" required>
                 </div>
 
-                <p>Valor Total:</p>
                 <div class="total-price" id="textoTotal">R$ 0,00</div>
                 <input type="hidden" id="inputValorTotal" name="valorTotal">
-
-                <button type="submit" class="btn-confirm">CONFIRMAR E JOGAR</button>
+                <button type="submit" class="btn-confirm">CONFIRMAR E ALUGAR</button>
                 <button type="button" class="btn-cancel" onclick="fecharModalAluguel()">Cancelar</button>
             </form>
         </div>
     </div>
 
     <script th:inline="javascript">
-        /*<![CDATA[*/
+       
         var precoTexto = "[[${jogo.preco_aluguel}]]";
-        var controleAtivo = /*[[${usuario.controleParental}]]*/ false;
-        var pinCorreto = /*[[${usuario.pinParental}]]*/ "0000";
-        var generoJogo = /*[[${jogo.genero}]]*/ "";
-        var jogoAdulto = generoJogo.includes("RPG") || generoJogo.includes("+18");
+        var controleAtivo =  false;
+        var pinCorreto =  "0000";
+        var classificacao =  "L";
+        var tituloJogo =  "";
+
+        // Lógica de bloqueio: 14, 16 ou 18 anos
+        var listaBloqueio = ["14", "16", "18", "14+", "16+", "18+"];
+        var jogoAdulto = listaBloqueio.some(function(el) { 
+            return classificacao.toString().includes(el); 
+        });
         
-        // Variavel que pega o título do jogo para saber qual link abrir
-        var tituloJogo = /*[[${jogo.titulo}]]*/ "";
-        /*]]>*/
 
-        // FUNÇÃO QUE ABRE O ITCH.IO DEPENDENDO DO NOME DO JOGO
         function abrirMeuJogo() {
-            var titulo = tituloJogo.toLowerCase(); // Deixa minúsculo para facilitar a busca
-
+            var titulo = tituloJogo.toLowerCase(); 
             if (titulo.includes("lost in tales")) {
                 window.open('https://luccaoliveira.itch.io/lost-in-tales-mobile-game', '_blank');
             } else if (titulo.includes("feneco")) {
@@ -157,12 +148,12 @@
             } else if (titulo.includes("dark side of horror")) {
                 window.open('https://saulosouza2703.itch.io/darksideofhorror', '_blank');
             } else {
-                // Se for outro jogo do banco, abre a home do Itch.io
                 window.open('https://itch.io', '_blank');
             }
         }
 
         window.onload = function() {
+            
             if (controleAtivo && jogoAdulto) {
                 document.querySelector('.detalhes-hero').classList.add('blur-content');
                 document.querySelector('.detalhes-info-section').classList.add('blur-content');
@@ -170,9 +161,7 @@
             }
             
             const urlParams = new URLSearchParams(window.location.search);
-            if(urlParams.has('erroSenha')) {
-                abrirModalAluguel();
-            }
+            if(urlParams.has('erroSenha')) { abrirModalAluguel(); }
         };
 
         function verificarPin() {
@@ -182,40 +171,20 @@
                 document.querySelector('.detalhes-hero').classList.remove('blur-content');
                 document.querySelector('.detalhes-info-section').classList.remove('blur-content');
             } else {
-                alert("PIN Incorreto! Tente novamente.");
+                alert("PIN Incorreto! Verifique na aba de Segurança.");
             }
         }
 
         var precoDiario = 0;
-        try {
-            if (precoTexto && precoTexto !== 'null') {
-                var formatado = precoTexto.toString().replace(',', '.');
-                precoDiario = parseFloat(formatado);
-            }
-        } catch (e) { console.error(e); }
-
-        function abrirModalAluguel() {
-            document.getElementById('modalAluguel').style.display = 'flex';
-            atualizarTotal(); 
-        }
-
-        function fecharModalAluguel() {
-            document.getElementById('modalAluguel').style.display = 'none';
-        }
-
+        try { if (precoTexto) { precoDiario = parseFloat(precoTexto.toString().replace(',', '.')); } } catch (e) {}
+        function abrirModalAluguel() { document.getElementById('modalAluguel').style.display = 'flex'; atualizarTotal(); }
+        function fecharModalAluguel() { document.getElementById('modalAluguel').style.display = 'none'; }
         function atualizarTotal() {
-            var dias = document.getElementById('inputDias').value;
-            
-            if (!dias || dias < 1) { dias = 1; }
-
+            var dias = document.getElementById('inputDias').value || 1;
             var total = dias * precoDiario;
-
-            var totalVisual = total.toFixed(2).replace('.', ',');
-            document.getElementById('textoTotal').innerText = 'R$ ' + totalVisual;
-            
+            document.getElementById('textoTotal').innerText = 'R$ ' + total.toFixed(2).replace('.', ',');
             document.getElementById('inputValorTotal').value = total.toFixed(2);
         }
     </script>
-
 </body>
 </html>

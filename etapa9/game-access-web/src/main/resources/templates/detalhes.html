@@ -27,16 +27,15 @@
         </div>
         <div class="header-right" style="display: flex; align-items: center;">
             <div style="text-align: right; margin-right: 15px;">
-                <span style="color:white; display:block; font-size: 0.9rem; font-weight: bold;" th:text="${usuario.nomeUsuario}">Usuário</span>
+                <span style="color:white; display:block; font-size: 0.9rem; font-weight: bold;" th:text="${usuario.nomeUsuario}">Fernanda</span>
             </div>
-            <a href="/catalogo" style="display: flex; align-items: center; text-decoration: none;">
+            <a href="/catalogo" style="display: flex; align-items: center; text-decoration: none; margin-right: 10px;">
                 <span class="material-icons" style="color:white; font-size: 2rem;">arrow_back</span>
             </a>
-            <a href="/configuracao" style="display: flex; align-items: center; margin-left: 10px;">
-                <img th:if="${usuario.fotoPerfil != null}" th:src="${usuario.fotoPerfil}" 
-                     class="profile-pic-header">
-                <span th:unless="${usuario.fotoPerfil != null}" class="material-icons" style="color:white; font-size: 2rem;">account_circle</span>
-            </a>
+            <div style="display: flex; align-items: center;">
+                <img th:src="${usuario.fotoPerfil != null ? usuario.fotoPerfil : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" 
+                     style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid var(--verde-neon);">
+            </div>
         </div>
     </header>
 
@@ -50,39 +49,29 @@
             <button type="button" onclick="verificarPin()" class="btn-confirm" style="width: 150px; background: red; color: white;">DESBLOQUEAR</button>
         </div>
 
-        <div class="detalhes-hero" 
-             th:style="'background-image: url(' + ${jogo.imagem} + '); background-size: cover; background-position: center;'">
-            
+        <div class="detalhes-hero" th:style="'background-image: url(' + ${jogo.imagem} + '); background-size: cover; background-position: center;'">
             <div class="detalhes-overlay"></div>
             <div class="detalhes-container">
-                
                 <h1 class="detalhes-titulo" th:text="${jogo.titulo}">NOME DO JOGO</h1>
-                
                 <p class="detalhes-meta">
                     <span th:text="${jogo.dataLancamento.year}">2025</span> | 
                     <span th:text="${jogo.genero}">Gênero</span> | 
-                    <span th:class="'badge-classif rating-' + ${jogo.classificacao}" 
-                          th:text="${jogo.classificacao}">L</span>
+                    <span th:class="'badge-classif rating-' + ${jogo.classificacao}" th:text="${jogo.classificacao}">L</span>
                 </p>
                 
                 <button th:if="${jaAlugado}" class="btn-alugar" style="background-color: var(--verde-neon); color: black; border: none;" onclick="abrirMeuJogo()">
                     <span class="material-icons" style="vertical-align: middle;">sports_esports</span> JOGAR AGORA
                 </button>
 
-                <button th:unless="${jaAlugado}" 
-                        class="btn-alugar" 
-                        th:text="'ALUGAR R$ ' + ${jogo.preco_aluguel} + ' / dia'"
-                        onclick="abrirModalAluguel()">
+                <button th:unless="${jaAlugado}" class="btn-alugar" th:text="'ALUGAR R$ ' + ${jogo.preco_aluguel} + ' / dia'" onclick="abrirModalAluguel()">
                     ALUGAR R$ 00,00
                 </button>
-
             </div>
         </div>
 
         <div class="detalhes-info-section">
             <h3 class="info-titulo">SOBRE O JOGO</h3>
             <p class="info-texto" th:text="${jogo.descricao}">Descrição...</p>
-            
             <h3 class="info-titulo">FICHA TÉCNICA</h3>
             <div class="tech-grid">
                 <p><strong>Plataforma:</strong> <span th:text="${jogo.plataforma}">Plataforma</span></p>
@@ -103,7 +92,7 @@
             <p th:if="${param.erroSenha}" style="color: red; background: rgba(255,0,0,0.1); padding: 5px; border-radius: 5px; margin-bottom: 10px;">
                 <span class="material-icons" style="font-size:1rem; vertical-align:middle;">error</span> Senha de compra incorreta!
             </p>
-            <form action="/confirmarAluguel" method="get">
+            <form action="/confirmarAluguel" method="post">
                 <input type="hidden" name="idJogo" th:value="${jogo.id_jogo}">
                 <select class="form-select" name="cartaoId" required>
                     <option value="" disabled selected>Selecione um cartão...</option>
@@ -125,19 +114,12 @@
     </div>
 
     <script th:inline="javascript">
-       
-        var precoTexto = "[[${jogo.preco_aluguel}]]";
-        var controleAtivo =  false;
-        var pinCorreto =  "0000";
-        var classificacao =  "L";
-        var tituloJogo =  "";
-
-        // Lógica de bloqueio: 14, 16 ou 18 anos
-        var listaBloqueio = ["14", "16", "18", "14+", "16+", "18+"];
-        var jogoAdulto = listaBloqueio.some(function(el) { 
-            return classificacao.toString().includes(el); 
-        });
         
+        var tituloJogo = [[${jogo.titulo}]];
+        var precoTexto = [[${jogo.preco_aluguel}]];
+        var controleAtivo = [[${usuario.controleParental}]];
+        var pinCorreto = [[${usuario.pinParental}]];
+        var classificacao = [[${jogo.classificacao}]];
 
         function abrirMeuJogo() {
             var titulo = tituloJogo.toLowerCase(); 
@@ -153,7 +135,11 @@
         }
 
         window.onload = function() {
-            
+            var listaBloqueio = ["14", "16", "18", "14+", "16+", "18+"];
+            var jogoAdulto = listaBloqueio.some(function(el) { 
+                return classificacao.toString().includes(el); 
+            });
+
             if (controleAtivo && jogoAdulto) {
                 document.querySelector('.detalhes-hero').classList.add('blur-content');
                 document.querySelector('.detalhes-info-section').classList.add('blur-content');
@@ -171,12 +157,11 @@
                 document.querySelector('.detalhes-hero').classList.remove('blur-content');
                 document.querySelector('.detalhes-info-section').classList.remove('blur-content');
             } else {
-                alert("PIN Incorreto! Verifique na aba de Segurança.");
+                alert("PIN Incorreto!");
             }
         }
 
-        var precoDiario = 0;
-        try { if (precoTexto) { precoDiario = parseFloat(precoTexto.toString().replace(',', '.')); } } catch (e) {}
+        var precoDiario = parseFloat(precoTexto.toString().replace(',', '.'));
         function abrirModalAluguel() { document.getElementById('modalAluguel').style.display = 'flex'; atualizarTotal(); }
         function fecharModalAluguel() { document.getElementById('modalAluguel').style.display = 'none'; }
         function atualizarTotal() {

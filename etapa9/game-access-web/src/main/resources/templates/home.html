@@ -20,8 +20,6 @@
         </div>
         <ul class="menu-list">
             <li><a href="/alugueis">Meus Aluguéis</a></li>
-            <li><a href="/catalogo">Minha Lista</a></li> 
-            <li><a href="/configuracao">Configuração</a></li>
         </ul>
         <div class="menu-bottom">
             <a href="/configuracao"><span class="material-icons">settings</span> Config.</a>
@@ -296,7 +294,6 @@
     <script src="/js/script.js"></script>
 
     <script>
-        // === FUNÇÃO DA BARRA DE PESQUISA (TURBINADA) ===
         function filtrarJogosNaTela() {
             const input = document.getElementById("searchInput");
             if (!input) return;
@@ -330,7 +327,6 @@
             });
         }
 
-        
         document.addEventListener("DOMContentLoaded", function() {
             const genreMenu = document.getElementById("genreMenu");
             if (genreMenu) {

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro - Game Access</title>
-    <link rel="stylesheet" href="/css/estilo.css">
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body class="auth-body">
@@ -15,15 +15,25 @@
 
     <div class="auth-container">
         <h2>Crie sua conta</h2>
-        <form action="/login" method="get">
+        
+        <form th:action="@{/cadastrarUsuario}" method="post" autocomplete="off">
             
-            <input type="text" name="nome" placeholder="Nome Completo" required>
+            <p th:if="${erroSenha}" style="color: #ff4444; background: rgba(255,68,68,0.1); padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 0.9rem;">
+                <span class="material-icons" style="font-size: 1rem; vertical-align: middle;">error</span>
+                <span th:text="${erroSenha}">Erro de senha</span>
+            </p>
+
+            <input type="text" name="nome" placeholder="Nome de Usuário (Ex: FefeGamer)" 
+                   autocomplete="off" required>
             
-            <input type="text" name="nomeUsuario" placeholder="Nome de Usuário (Ex: FefeGamer)" required>
+            <input type="email" name="email" placeholder="E-mail" 
+                   autocomplete="off" required>
             
-            <input type="email" name="email" placeholder="E-mail" required>
-            <input type="password" name="senha" placeholder="Senha" required>
-            <input type="password" placeholder="Confirmar Senha" required>
+            <input type="password" name="senha" placeholder="Senha" 
+                   autocomplete="new-password" required>
+            
+            <input type="password" name="confirmarSenha" placeholder="Confirmar Senha" 
+                   autocomplete="new-password" required>
             
             <button type="submit" class="btn-full">CADASTRAR</button>
         </form>

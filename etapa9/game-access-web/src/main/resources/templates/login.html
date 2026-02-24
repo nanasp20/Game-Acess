@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Entrar - Game Access</title>
-    <link rel="stylesheet" href="/css/estilo.css">
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body class="auth-body">
@@ -15,9 +15,17 @@
 
     <div class="auth-container">
         <h2>Acesse sua conta</h2>
-        <form action="/catalogo">
-            <input type="email" placeholder="E-mail" required>
-            <input type="password" placeholder="Senha" required>
+
+        <form th:action="@{/logar}" method="post">
+            
+            <p th:if="${erroLogin}" style="color: #ff4444; background: rgba(255,68,68,0.1); padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 0.9rem;">
+                <span class="material-icons" style="font-size: 1rem; vertical-align: middle;">error</span>
+                <span th:text="${erroLogin}">Erro de login</span>
+            </p>
+
+            <input type="text" name="nome" placeholder="Nome de Usuário" required>
+            
+            <input type="password" name="senha" placeholder="Senha" required>
             
             <button type="submit" class="btn-full">ENTRAR</button>
         </form>

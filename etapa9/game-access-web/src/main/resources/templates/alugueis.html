@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meus Aluguéis - Game Access</title>
-    <link rel="stylesheet" href="/css/estilo.css">
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
     <style>
@@ -55,7 +55,11 @@
 
                         <div class="rental-actions">
                             <button class="btn-play-small">JOGAR ▶</button>
-                            <button type="button" class="btn-extend" onclick="abrirModalEstender(1, 15.00)">ESTENDER +</button>
+                            
+                            <button type="button" class="btn-extend" 
+                                    th:onclick="'abrirModalEstender(' + ${aluguel.id} + ', ' + ${aluguel.jogo.preco_aluguel} + ')'">
+                                ESTENDER +
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -124,7 +128,7 @@
         <div class="modal-content">
             <h3 style="color: white; text-align: center; margin-bottom: 20px;">Novo Cartão</h3>
             
-            <form action="/salvarCartao" method="get">
+            <form action="/salvarCartao" method="post">
                 <div class="form-group">
                     <input type="text" name="numeroCartao" class="form-input" placeholder="Número do Cartão" required maxlength="19">
                 </div>
@@ -133,7 +137,7 @@
                 </div>
                 <div style="display: flex; gap: 10px;">
                     <input type="text" name="validade" class="form-input" placeholder="MM/AA" required maxlength="5">
-                    <input type="text" class="form-input" placeholder="CVV" required maxlength="3">
+                    <input type="text" name="cvv" class="form-input" placeholder="CVV" required maxlength="3">
                 </div>
                 <button type="submit" class="btn-save">SALVAR CARTÃO</button>
                 <button type="button" class="btn-cancel" onclick="fecharModal()">Cancelar</button>
@@ -160,7 +164,7 @@
                     <input type="number" id="inputDiasEstender" name="dias" class="form-input" value="1" min="1" oninput="atualizarTotalEstender()">
                 </div>
 
-                <div class="form-group" th:if="${usuario.pedirSenhaCompra}">
+                <div class="form-group" th:if="${usuario.pedirSenhaCompra == true}">
                     <label style="color:var(--verde-neon); display:block; margin-bottom:5px;">Confirme seu PIN/Senha:</label>
                     <input type="password" name="senhaDigitada" class="form-input" placeholder="****" required>
                 </div>
